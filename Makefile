@@ -1,8 +1,8 @@
 install: # Установка зависимостей с использованием poetry
 	poetry install
 
-gendiff-h: # Запуск "Brain Games"
-	poetry run python3 -m gendiff -h
+gendiff-h: # Запуск "gendiff -h"
+	poetry run python3 -m gendiff.gendiff -h
 
 build: # Сборка пакета с использованием poetry
 	poetry build
