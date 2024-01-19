@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 dist/
+test.py
+file_sample/
