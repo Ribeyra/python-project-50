@@ -41,6 +41,6 @@ jobs:
     - name: Test & publish code coverage
       uses: paambaati/codeclimate-action@v5.0.0
       env:
-        CC_TEST_REPORTER_ID: 73788262d5ebe7aea45358e00fab6095e87ec4488b7320305eb2429cb951dcb6
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
       with:
         coverageCommand: pytest --cov --cov-report xml
