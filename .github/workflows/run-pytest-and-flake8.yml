@@ -43,5 +43,5 @@ jobs:
       env:
         CC_TEST_REPORTER_ID: 73788262d5ebe7aea45358e00fab6095e87ec4488b7320305eb2429cb951dcb6
       with:
-        coverageCommand: pytest --cov
+        coverageCommand: pytest --cov-report term-missing --cov=python-project-50
         debug: true
