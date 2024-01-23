@@ -17,4 +17,4 @@ package-uninstall: # Удаление установленного пакета
 	python3 -m pip uninstall hexlet-code
 
 lint: # Запуск flake8 для проверки стиля кода в проекте
-	poetry run flake8 !!brain_games
+	poetry run flake8 gendiff

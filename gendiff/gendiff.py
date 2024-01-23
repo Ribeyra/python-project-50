@@ -14,29 +14,30 @@ def main():
     print(generate_diff(args.first_file, args.second_file))
 
 
+def replace_bool_to_str(value: bool) -> str:
+    if value is True:
+        return 'true'
+    elif value is False:
+        return 'false'
+    return value
+
+
 def generate_diff(first_file, second_file):
     file1 = json.load(open(first_file), parse_int=str)
-    y = json.load(open(second_file), parse_int=str)
-
-    def replace_bool_to_str(value: bool) -> str:
-        if value is True:
-            return 'true'
-        elif value is False:
-            return 'false'
-        return value
+    file2 = json.load(open(second_file), parse_int=str)
 
     lines = []
-    for el in sorted(set(file1) | set(y)):
-        if el in file1 and el in y:
-            if file1[el] != y[el]:
+    for el in sorted(set(file1) | set(file2)):
+        if el in file1 and el in file2:
+            if file1[el] != file2[el]:
                 lines.append(f'  - {el}: {replace_bool_to_str(file1[el])}\n'
-                             f'  + {el}: {replace_bool_to_str(y[el])}')
+                             f'  + {el}: {replace_bool_to_str(file2[el])}')
             else:
                 lines.append(f'    {el}: {replace_bool_to_str(file1[el])}')
         elif el in file1:
             lines.append(f'  - {el}: {replace_bool_to_str(file1[el])}')
-        elif el in y:
-            lines.append(f'  + {el}: {replace_bool_to_str(y[el])}')
+        elif el in file2:
+            lines.append(f'  + {el}: {replace_bool_to_str(file2[el])}')
 
     result = '{\n' + '\n'.join(lines) + '\n}'
     return result
