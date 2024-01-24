@@ -1,5 +1,5 @@
 import argparse
-import json
+from gendiff.parser import parser
 
 
 def main():
@@ -23,21 +23,25 @@ def replace_bool_to_str(value: bool) -> str:
 
 
 def generate_diff(first_file, second_file):
-    file1 = json.load(open(first_file), parse_int=str)
-    file2 = json.load(open(second_file), parse_int=str)
+    file1 = parser(first_file)
+    file2 = parser(second_file)
 
     lines = []
     for el in sorted(set(file1) | set(file2)):
         if el in file1 and el in file2:
-            if file1[el] != file2[el]:
-                lines.append(f'  - {el}: {replace_bool_to_str(file1[el])}\n'
-                             f'  + {el}: {replace_bool_to_str(file2[el])}')
+            value1 = replace_bool_to_str(file1[el])
+            value2 = replace_bool_to_str(file2[el])
+            if value1 != value2:
+                lines.append(f'  - {el}: {value1}\n'
+                             f'  + {el}: {value2}')
             else:
-                lines.append(f'    {el}: {replace_bool_to_str(file1[el])}')
+                lines.append(f'    {el}: {value1}')
         elif el in file1:
-            lines.append(f'  - {el}: {replace_bool_to_str(file1[el])}')
+            value1 = replace_bool_to_str(file1[el])
+            lines.append(f'  - {el}: {value1}')
         elif el in file2:
-            lines.append(f'  + {el}: {replace_bool_to_str(file2[el])}')
+            value2 = replace_bool_to_str(file2[el])
+            lines.append(f'  + {el}: {value2}')
 
     result = '{\n' + '\n'.join(lines) + '\n}'
     return result

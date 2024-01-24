@@ -18,3 +18,10 @@ package-uninstall: # Удаление установленного пакета
 
 lint: # Запуск flake8 для проверки стиля кода в проекте
 	poetry run flake8 gendiff
+
+test: # Запуск тестов
+	poetry run pytest
+
+cov-test: # Проверка покрытия кода тестами
+	poetry run pytest --cov
+	poetry run coverage report -m

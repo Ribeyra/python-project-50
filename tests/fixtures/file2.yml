@@ -1,0 +1,4 @@
+    uses: actions/setup-python@v3
+    name: Test & publish code coverage
+    run: pytest --cov --cov-report xml
+    env: ${{ secrets.CC_TEST_REPORTER_ID }}
