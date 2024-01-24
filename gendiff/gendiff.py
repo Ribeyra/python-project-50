@@ -22,26 +22,26 @@ def replace_bool_to_str(value: bool) -> str:
     return value
 
 
+def assemble_string(el, value1, value2):
+    if value2 is None:
+        return f'  - {el}: {value1}'
+    elif value1 is None:
+        return f'  + {el}: {value2}'
+    elif value1 != value2:
+        return f'  - {el}: {value1}\n  + {el}: {value2}'
+    else:
+        return f'    {el}: {value1}'
+
+
 def generate_diff(first_file, second_file):
     file1 = parser(first_file)
     file2 = parser(second_file)
 
     lines = []
     for el in sorted(set(file1) | set(file2)):
-        if el in file1 and el in file2:
-            value1 = replace_bool_to_str(file1[el])
-            value2 = replace_bool_to_str(file2[el])
-            if value1 != value2:
-                lines.append(f'  - {el}: {value1}\n'
-                             f'  + {el}: {value2}')
-            else:
-                lines.append(f'    {el}: {value1}')
-        elif el in file1:
-            value1 = replace_bool_to_str(file1[el])
-            lines.append(f'  - {el}: {value1}')
-        elif el in file2:
-            value2 = replace_bool_to_str(file2[el])
-            lines.append(f'  + {el}: {value2}')
+        value1 = replace_bool_to_str(file1.get(el))
+        value2 = replace_bool_to_str(file2.get(el))
+        lines.append(assemble_string(el, value1, value2))
 
     result = '{\n' + '\n'.join(lines) + '\n}'
     return result
