@@ -1,0 +1,48 @@
+{
+    group1: {
+        user1: {
+            age: 46
+            name: John Cena
+        }
+        user2: {
+            age: 88
+            name: Woody Allen
+        }
+    }
+    group2: {
+        user1: {
+          - age: 43
+          + height: 181
+            name: Jake Gyllenhaal
+        }
+        user2: {
+          - age: 64
+          + age: 63
+            name: Luc Besson
+        }
+      + user4: {
+            name: Alan Cumming
+            age: 59
+        }
+    }
+  - group3: {
+        user1: {
+            name: Alan Cumming
+            age: 59
+        }
+        user2: {
+            name: James Cromwell
+            age: 84
+        }
+    }
+  + group4: {
+        user1: {
+            name: Rosamund Pike
+            age: 45
+        }
+        user2: {
+            name: James Cromwell
+            age: 84
+        }
+    }
+}

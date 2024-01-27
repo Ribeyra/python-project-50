@@ -13,3 +13,6 @@
 
 **Comparison of flat files (YAML)**  
 [![asciicast](https://asciinema.org/a/IHAw1ZyCE9Pm2SlBPR8mfwVVP.svg)](https://asciinema.org/a/IHAw1ZyCE9Pm2SlBPR8mfwVVP)
+
+**Comparison of nested files (JSON)**  
+[![asciicast](https://asciinema.org/a/ZPDz4G5og6Jw0TW0idFU3wEiH.svg)](https://asciinema.org/a/ZPDz4G5og6Jw0TW0idFU3wEiH)

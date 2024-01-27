@@ -1,0 +1,8 @@
+{
+  + env: ${{ secrets.CC_TEST_REPORTER_ID }}
+  - name: Lint with flake8
+  + name: Test & publish code coverage
+  - run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  + run: pytest --cov --cov-report xml
+    uses: actions/setup-python@v3
+}

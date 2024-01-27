@@ -1,0 +1,21 @@
+group1:
+  user1:
+    name: John Cena
+    age: 46
+  user2:
+    name: Woody Allen  
+    age: 88
+group2:
+  user1:
+    name: Jake Gyllenhaal
+    age: 43  
+  user2:
+    name: Luc Besson
+    age: 64
+group3:
+  user1: 
+    name: Alan Cumming
+    age: 59
+  user2:
+    name: James Cromwell
+    age: 84
