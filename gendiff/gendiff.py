@@ -48,15 +48,16 @@ def compar_values(value1, value2, obj):
     of comparing two values
     """
     if isinstance(value1, dict) and isinstance(value2, dict):
-        return (' ', differ(value1, value2))
+        result = (' ', differ(value1, value2))
     elif value1 == value2:
-        return (' ', add_parameter(value1)[1])
+        result = (' ', add_parameter(value1)[1])
     elif value2 == obj:
-        return ('-', add_parameter(value1)[1])
+        result = ('-', add_parameter(value1)[1])
     elif value1 == obj:
-        return ('+', add_parameter(value2)[1])
+        result = ('+', add_parameter(value2)[1])
     elif not (isinstance(value1, dict) and isinstance(value2, dict)):
-        return ('*', add_parameter(value1)[1], add_parameter(value2)[1])
+        result = ('*', add_parameter(value1)[1], add_parameter(value2)[1])
+    return result
 
 
 def differ(data1: dict, data2: dict) -> dict:
