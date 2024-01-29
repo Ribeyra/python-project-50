@@ -14,99 +14,155 @@ def main():
     print(generate_diff(args.first_file, args.second_file))
 
 
+def create_attribut(target, key, value):
+    """
+    Creates an attribute for a dictionary element, changing the value
+    to list [' ', value].
+    The first element of the list is an attribute that describes the status
+    of the value change.
+    """
+    target[key] = [' ', value]
+
+
+def added(target, key, attributes):
+    """
+    Adds attributes by key to the target dictionary.
+    Changes the attribute that describes the change status of the value.
+    """
+    create_attribut(target, key, show_value(attributes))
+    target[key][0] = '+'
+
+
+def deleted(target, key, attributes):
+    """
+    Adds attributes by key to the target dictionary.
+    Changes the attribute that describes the change status of the value.
+    """
+    create_attribut(target, key, show_value(attributes))
+    target[key][0] = '-'
+
+
+def changed(target, key, old_attributes, new_attributes):
+    """
+    Adds attributes by key to the target dictionary.
+    Adds a new value to the attributes.
+    Changes the attribute that describes the change status of the value.
+    """
+    create_attribut(target, key, show_value(old_attributes))
+    target[key].append(show_value(new_attributes))
+    target[key][0] = '*'
+
+
+def show_value(attributes):
+    """
+    Returns the value of a dictionary element from attributes
+    """
+    return attributes[1]
+
+
+def show_new_value(attributes):
+    """
+    Returns the new value of a dictionary element from attributes
+    """
+    return attributes[2]
+
+
+def show_status(attributes):
+    """
+    Returns the change status of a dictionary element from attributes
+    """
+    return attributes[0]
+
+
 def replace_bool_or_None_to_str(value) -> str:
     if value is True:
-        return 'true'
+        value = 'true'
     elif value is False:
-        return 'false'
-    return 'null'
+        value = 'false'
+    elif value is None:
+        value = 'null'
+    return value
 
 
-def add_parameter(data):
+def add_atribut(data):
     """
-    Changes the value to a tuple (' ' , value).
-    For dictionaries it runs recursively.
-    The first value of the tuple is a parameter describing the status
-    of the value change
+    Appends dictionary elements with an attribute.
+    If the value is a dictionary, execute recursively.
     """
-    if isinstance(data, bool) or data is None:
-        return (' ', replace_bool_or_None_to_str(data))
-    if isinstance(data, dict):
-        res = {}
-        for key, value in data.items():
-            if isinstance(value, dict):
-                res[key] = add_parameter(value)
-            else:
-                res[key] = (' ', value)
-        return (' ', res)
-    return (' ', data)
+    for key, value in data.items():
+        if isinstance(value, dict):
+            add_atribut(value)
+            create_attribut(data, key, value)
+        else:
+            create_attribut(data, key, replace_bool_or_None_to_str(value))
 
 
-def compar_values(value1, value2, obj):
+def compar_values(key, data, attributes1, attributes2):
     """
-    Changes the value of a parameter depending on the result
-    of comparing two values
+    Changes an attribute depending on the result of the comparison
     """
-    if isinstance(value1, dict) and isinstance(value2, dict):
-        result = (' ', differ(value1, value2))
-    elif value1 == value2:
-        result = (' ', add_parameter(value1)[1])
-    elif value2 == obj:
-        result = ('-', add_parameter(value1)[1])
-    elif value1 == obj:
-        result = ('+', add_parameter(value2)[1])
-    elif not (isinstance(value1, dict) and isinstance(value2, dict)):
-        result = ('*', add_parameter(value1)[1], add_parameter(value2)[1])
-    return result
+    old_value, new_value = show_value(attributes1), show_value(attributes2)
+    if new_value is None:
+        deleted(data, key, attributes1)
+    elif old_value is None:
+        added(data, key, attributes2)
+    elif isinstance(old_value, dict) and isinstance(new_value, dict):
+        create_attribut(data, key, differ(old_value, new_value))
+    elif attributes1 != attributes2:
+        changed(data, key, attributes1, attributes2)
+    else:
+        create_attribut(data, key, old_value)
 
 
 def differ(data1: dict, data2: dict) -> dict:
     """
     Returns a dictionary containing the result of comparing the values
-    of two files. For each key, the value will be a tuple, the first
-    element of which describes the change status (' ' - unchanged,
+    of two dictionaries. For each key, the value will be a list,
+    the first element of which describes the change status (' ' - no change,
     '-' - key deleted, '+' - key added, '*' - key value changed).
     Can be run recursively from a child function.
-    Example output:
-    >>> pprint.pprint(differ(data1, data2))
-    {'common': (' ',
-            {'follow': ('+', 'false'),
-             'setting1': (' ', 'Value 1'),
-             'setting2': ('-', 200),
-             'setting3': ('*', 'true', 'null'),
-             'setting4': ('+', 'blah blah'),
-             'setting5': ('+', {'key5': (' ', 'value5')}),
-             'setting6': (' ',
-                          {'doge': (' ', {'wow': ('*', '', 'so much')}),
-                           'key': (' ', 'value'),
-                           'ops': ('+', 'vops')})}),
-    ...
+       Example output:
+       >>> pprint.pprint(vary(data1, data2))
+       {'general': [' ',
+               {'follow':   ['+', 'false'],
+                'setting1': [' ', 'Value 1'],
+                'setting2': ['-', 200],
+                'setting3': ['*', 'true', 'null'],
+                'setting4': ['+', 'blah blah'],
+                'setting5': ['+', {'key5': [' ', 'value5']}],
+                'setting6': [' ',
+                             {'doge': [' ', {'wow': ['*', '', 'so much']}],
+                              'key':  [' ', 'value'],
+                              'oops': ['+', 'whoops']}]}],
+        ...
     """
-    obj = object()
-    res = {}
-    for el in sorted(set(data1) | set(data2)):
-        value1, value2 = data1.get(el, obj), data2.get(el, obj)
-        res[el] = compar_values(value1, value2, obj)
-    return res
+    no_attributes = [None, None]
+    result = {}
+    for key in sorted(set(data1) | set(data2)):
+        attributes1 = data1.get(key, no_attributes)
+        attributes2 = data2.get(key, no_attributes)
+        compar_values(key, result, attributes1, attributes2)
+    return result
 
 
-def assemble_string(indentations: dict, key: str, value: tuple, deps) -> str:
+def assemble_string(indentations: dict, key: str, attributs: list, deps: int):
     """
     Assemble strings from key and value indentation.
     Is a child function of stylish
     """
-    changed, value1, *_ = value
-    if isinstance(value1, dict):
-        value1 = stylish(value1, deps + 1)
-    if changed == '*':
-        value2 = value[2]
-        return (f'{indentations["-"]}{key}: {value1}\n'
-                f'{indentations["+"]}{key}: {value2}\n')
-    elif changed == '-':
-        return f'{indentations["-"]}{key}: {value1}\n'
-    elif changed == '+':
-        return f'{indentations["+"]}{key}: {value1}\n'
-    return f'{indentations[" "]}{key}: {value1}\n'
+    status = show_status(attributs)
+    value = show_value(attributs)
+    if isinstance(value, dict):
+        value = stylish(value, deps + 1)
+    if status == '*':
+        new_value = show_new_value(attributs)
+        return (f'{indentations["-"]}{key}: {value}\n'
+                f'{indentations["+"]}{key}: {new_value}\n')
+    elif status == '-':
+        return f'{indentations["-"]}{key}: {value}\n'
+    elif status == '+':
+        return f'{indentations["+"]}{key}: {value}\n'
+    return f'{indentations[" "]}{key}: {value}\n'
 
 
 def stylish(data, deps=0) -> str:
@@ -128,7 +184,10 @@ def stylish(data, deps=0) -> str:
 
 def generate_diff(file1, file2, formater=stylish):
     data1 = parser(file1)
+    add_atribut(data1)
+
     data2 = parser(file2)
+    add_atribut(data2)
 
     result = differ(data1, data2)
     return formater(result)
