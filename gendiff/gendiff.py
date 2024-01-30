@@ -1,77 +1,25 @@
 import argparse
 from gendiff.parser import parser
+from gendiff.command import create_attribut, added, deleted, changed, show_value
+from formater.stylish import stylish
+from formater.plain import plain
 
 
 def main():
     parser = argparse.ArgumentParser(
         description='Compares two configuration files and shows a difference.'
     )
+
     parser.add_argument('first_file')
     parser.add_argument('second_file')
     parser.add_argument('-f', '--format', help='set format of output')
 
     args = parser.parse_args()
-    print(generate_diff(args.first_file, args.second_file))
 
-
-def create_attribut(target, key, value):
-    """
-    Creates an attribute for a dictionary element, changing the value
-    to list [' ', value].
-    The first element of the list is an attribute that describes the status
-    of the value change.
-    """
-    target[key] = [' ', value]
-
-
-def added(target, key, attributes):
-    """
-    Adds attributes by key to the target dictionary.
-    Changes the attribute that describes the change status of the value.
-    """
-    create_attribut(target, key, show_value(attributes))
-    target[key][0] = '+'
-
-
-def deleted(target, key, attributes):
-    """
-    Adds attributes by key to the target dictionary.
-    Changes the attribute that describes the change status of the value.
-    """
-    create_attribut(target, key, show_value(attributes))
-    target[key][0] = '-'
-
-
-def changed(target, key, old_attributes, new_attributes):
-    """
-    Adds attributes by key to the target dictionary.
-    Adds a new value to the attributes.
-    Changes the attribute that describes the change status of the value.
-    """
-    create_attribut(target, key, show_value(old_attributes))
-    target[key].append(show_value(new_attributes))
-    target[key][0] = '*'
-
-
-def show_value(attributes):
-    """
-    Returns the value of a dictionary element from attributes
-    """
-    return attributes[1]
-
-
-def show_new_value(attributes):
-    """
-    Returns the new value of a dictionary element from attributes
-    """
-    return attributes[2]
-
-
-def show_status(attributes):
-    """
-    Returns the change status of a dictionary element from attributes
-    """
-    return attributes[0]
+    formater = stylish
+    if args.format == 'plain':
+        formater = plain
+    print(generate_diff(args.first_file, args.second_file, formater))
 
 
 def replace_bool_or_None_to_str(value) -> str:
@@ -142,43 +90,6 @@ def differ(data1: dict, data2: dict) -> dict:
         attributes1 = data1.get(key, no_attributes)
         attributes2 = data2.get(key, no_attributes)
         compar_values(key, result, attributes1, attributes2)
-    return result
-
-
-def assemble_string(indentations: dict, key: str, attributs: list, deps: int):
-    """
-    Assemble strings from key and value indentation.
-    Is a child function of stylish
-    """
-    status = show_status(attributs)
-    value = show_value(attributs)
-    if isinstance(value, dict):
-        value = stylish(value, deps + 1)
-    if status == '*':
-        new_value = show_new_value(attributs)
-        return (f'{indentations["-"]}{key}: {value}\n'
-                f'{indentations["+"]}{key}: {new_value}\n')
-    elif status == '-':
-        return f'{indentations["-"]}{key}: {value}\n'
-    elif status == '+':
-        return f'{indentations["+"]}{key}: {value}\n'
-    return f'{indentations[" "]}{key}: {value}\n'
-
-
-def stylish(data, deps=0) -> str:
-    """
-    Returns a string formatting the raw diff.
-    Can be called recursively from a child function.
-    """
-    indentations = {
-        ' ': (' ' * 4) * deps + '    ',
-        '-': (' ' * 4) * deps + '  - ',
-        '+': (' ' * 4) * deps + '  + '
-    }
-    lines = []
-    for key, value in data.items():
-        lines.append(assemble_string(indentations, key, value, deps))
-    result = ''.join(['{\n'] + lines + [f'{indentations[" "][:-4]}' + '}'])
     return result
 
 
