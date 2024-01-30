@@ -27,16 +27,18 @@ def assemble_string(path, attributes):
     return result
 
 
-def plain(data):
+def plained(data, path=''):
+    result = []
+    for key, attributes in data.items():
+        status = show_status(attributes)
+        value = show_value(attributes)
+        if isinstance(value, dict) and status == ' ':
+            result.extend(plained(value, f'{path}{key}.'))
+        elif status != ' ':
+            result.append(assemble_string(f'{path}{key}.', attributes))
+    return result
 
-    def inner(data, path=''):
-        res = []
-        for key, attributes in data.items():
-            status = show_status(attributes)
-            value = show_value(attributes)
-            if isinstance(value, dict) and status == ' ':
-                res.extend(inner(value, f'{path}{key}.'))
-            elif status != ' ':
-                res.append(assemble_string(f'{path}{key}.', attributes))
-        return res
-    return '\n'.join(inner(data))
+
+def plain(data):
+    result = plained(data)
+    return '\n'.join(result)
