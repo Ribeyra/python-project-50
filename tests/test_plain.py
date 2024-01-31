@@ -7,14 +7,14 @@ def test_add_quotes():
     assert add_quotes('false') == 'false'
     assert add_quotes('null') == 'null'
     assert add_quotes('value') == "'value'"
-    assert add_quotes(12) == "'12'"
+    assert add_quotes(12) == 12
 
 
 def test_complex_value():
     assert complex_value({}) == '[complex value]'
     assert complex_value('true') == 'true'
     assert complex_value('value') == "'value'"
-    assert complex_value(12) == "'12'"
+    assert complex_value(12) == 12
 
 
 def test_assemble_string():
@@ -28,7 +28,7 @@ def test_assemble_string():
     assert assemble_string('path.to.value.', ['+', {}]) == text4
 
 
-with open('tests/fixtures/res_plain.txt') as file:
+with open('tests/fixtures/res_plain_out.txt') as file:
     exp_res = file.read()
 
 

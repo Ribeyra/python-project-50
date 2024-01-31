@@ -19,3 +19,6 @@
 
 **Comparison of nested files (JSON) to plain conclusion**  
 [![asciicast](https://asciinema.org/a/I1v71MsNEuonZ6PX1wOZVk1Nq.svg)](https://asciinema.org/a/I1v71MsNEuonZ6PX1wOZVk1Nq)
+
+**Comparison of nested files (JSON) to json conclusion**  
+[![asciicast](https://asciinema.org/a/ZzQkFIjtLqpkyu8PhwJaLgi4x.svg)](https://asciinema.org/a/ZzQkFIjtLqpkyu8PhwJaLgi4x)

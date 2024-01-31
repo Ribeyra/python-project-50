@@ -3,6 +3,7 @@ from gendiff.parser import parser
 from gendiff.command import create_attribut, added, deleted, changed, show_value
 from formater.stylish import stylish
 from formater.plain import plain
+from formater.json import json
 
 
 def main():
@@ -19,6 +20,8 @@ def main():
     formater = stylish
     if args.format == 'plain':
         formater = plain
+    elif args.format == 'json':
+        formater = json
     print(generate_diff(args.first_file, args.second_file, formater))
 
 

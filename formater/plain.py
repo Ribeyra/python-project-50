@@ -1,10 +1,10 @@
 from gendiff.command import show_status, show_value, show_new_value
 
 
-def add_quotes(text):
-    if text in ('true', 'false', 'null'):
-        return text
-    return f"'{text}'"
+def add_quotes(value):
+    if value in ('true', 'false', 'null') or not isinstance(value, str):
+        return value
+    return f"'{value}'"
 
 
 def complex_value(value):
