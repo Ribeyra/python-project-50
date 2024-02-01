@@ -3,7 +3,7 @@ from gendiff.parser import parser
 from gendiff.command import create_attribut, added, deleted, changed, show_value
 from formater.stylish import stylish
 from formater.plain import plain
-from formater.json import json
+from formater.json import json  # noqa F401
 
 
 def main():
@@ -104,7 +104,7 @@ def generate_diff(file1, file2, formater='stylish'):
     elif formater == 'plain':
         result = plain(result)
     elif formater == 'json':
-        result = json(result)
+        result = stylish(result)       # result = json(result)
     return result
 
 
