@@ -17,12 +17,7 @@ def main():
 
     args = parser.parse_args()
 
-    formater = stylish
-    if args.format == 'plain':
-        formater = plain
-    elif args.format == 'json':
-        formater = json
-    print(generate_diff(args.first_file, args.second_file, formater))
+    print(generate_diff(args.first_file, args.second_file, args.format))
 
 
 def replace_bool_or_None_to_str(value) -> str:
@@ -96,7 +91,7 @@ def differ(data1: dict, data2: dict) -> dict:
     return result
 
 
-def generate_diff(file1, file2, formater=stylish):
+def generate_diff(file1, file2, formater='stylish'):
     data1 = parser(file1)
     add_atribut(data1)
 
@@ -104,7 +99,13 @@ def generate_diff(file1, file2, formater=stylish):
     add_atribut(data2)
 
     result = differ(data1, data2)
-    return formater(result)
+    if formater == 'stylish':
+        result = stylish(result)
+    elif formater == 'plain':
+        result = plain(result)
+    elif formater == 'json':
+        result = json(result)
+    return result
 
 
 if __name__ == '__main__':

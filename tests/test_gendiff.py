@@ -138,3 +138,13 @@ def test_generate_diff_for_nested_structures():
         exp_nested = file.read()
 
     assert generate_diff(file3_yaml, file4_yaml) == exp_nested
+
+    with open('tests/fixtures/res_plain_out.txt', 'r') as file:
+        exp_nested = file.read()
+
+    assert generate_diff(file3_json, file4_json, 'plain') == exp_nested
+
+    with open('tests/fixtures/res_json_out.txt', 'r') as file:
+        exp_nested = file.read()
+
+    assert generate_diff(file3_json, file4_json, 'json') == exp_nested
