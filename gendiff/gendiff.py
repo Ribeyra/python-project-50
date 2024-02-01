@@ -99,7 +99,7 @@ def generate_diff(file1, file2, formater=None):
     add_atribut(data2)
 
     result = differ(data1, data2)
-    if formater is None:
+    if formater is None or formater == 'stylish':
         result = stylish(result)
     elif formater == 'plain':
         result = plain(result)
