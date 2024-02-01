@@ -91,7 +91,7 @@ def differ(data1: dict, data2: dict) -> dict:
     return result
 
 
-def generate_diff(file1, file2, formater='stylish'):
+def generate_diff(file1, file2, formater=None):
     data1 = parser(file1)
     add_atribut(data1)
 
@@ -99,7 +99,7 @@ def generate_diff(file1, file2, formater='stylish'):
     add_atribut(data2)
 
     result = differ(data1, data2)
-    if formater == 'stylish':
+    if formater is None:
         result = stylish(result)
     elif formater == 'plain':
         result = plain(result)
