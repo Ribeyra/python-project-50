@@ -12,6 +12,8 @@ def assemble_string(indentations: dict, key: str, attributs: list, deps: int):
         value = stylish(value, deps + 1)
     if status == '*':
         new_value = show_new_value(attributs)
+        if isinstance(new_value, dict):
+            new_value = stylish(new_value, deps + 1)
         return (f'{indentations["-"]}{key}: {value}\n'
                 f'{indentations["+"]}{key}: {new_value}\n')
     elif status == '-':

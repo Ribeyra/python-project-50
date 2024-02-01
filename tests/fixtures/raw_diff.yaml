@@ -12,7 +12,9 @@ common:
   setting3:
   - '*'
   - 'true'
-  - 'null'
+  - key: 
+    - ' '
+    - value
   setting4:
   - +
   - blah blah
