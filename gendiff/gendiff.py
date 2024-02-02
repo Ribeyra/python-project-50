@@ -88,8 +88,8 @@ def collect_diff(data1: dict, data2: dict) -> dict:
         value, new_value = get_value(attributes1), get_value(attributes2)
         if isinstance(value, dict) and isinstance(new_value, dict):
             create_attribut(result, key, collect_diff(value, new_value))
-        else:
-            compar_values(result, key, value, new_value)
+            continue
+        compar_values(result, key, value, new_value)
     return result
 
 
