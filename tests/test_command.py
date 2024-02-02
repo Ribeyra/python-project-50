@@ -1,6 +1,6 @@
 import pytest
-from gendiff.command import create_attribut, added, deleted, changed, \
-    show_value, show_new_value, show_status
+from gendiff.command import create_attribut, set_added, set_deleted, \
+    set_changed, get_value, get_new_value, get_status
 
 
 @pytest.fixture
@@ -21,18 +21,21 @@ def attributed_data():
     return {}
 
 
-def test_added(attributed_data):
-    added(attributed_data, 'key', [' ', 'value'])
+def test_set_added(attributed_data):
+    create_attribut(attributed_data, 'key', 'value')
+    set_added(attributed_data, 'key')
     assert attributed_data == {'key': ['+', 'value']}
 
 
-def test_deleted(attributed_data):
-    deleted(attributed_data, 'key', [' ', 'value'])
+def test_set_deleted(attributed_data):
+    create_attribut(attributed_data, 'key', 'value')
+    set_deleted(attributed_data, 'key')
     assert attributed_data == {'key': ['-', 'value']}
 
 
-def test_changed(attributed_data):
-    changed(attributed_data, 'key', [' ', 'value'], [' ', 'value2'])
+def test_set_changed(attributed_data):
+    create_attribut(attributed_data, 'key', 'value')
+    set_changed(attributed_data, 'key', 'value2')
     assert attributed_data == {'key': ['*', 'value', 'value2']}
 
 
@@ -40,12 +43,12 @@ changed_data = {'key': ['*', 'value', 'value2']}
 
 
 def test_show_status():
-    assert show_status(changed_data['key']) == '*'
+    assert get_status(changed_data['key']) == '*'
 
 
 def test_show_value():
-    assert show_value(changed_data['key']) == 'value'
+    assert get_value(changed_data['key']) == 'value'
 
 
 def test_show_new_value():
-    assert show_new_value(changed_data['key']) == 'value2'
+    assert get_new_value(changed_data['key']) == 'value2'

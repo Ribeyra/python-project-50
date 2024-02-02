@@ -1,12 +1,13 @@
 import argparse
-from gendiff.parser import parser
-from gendiff.command import create_attribut, added, deleted, changed, show_value
-from formater.stylish import stylish
-from formater.plain import plain
 from formater.json import json
+from formater.plain import plain
+from formater.stylish import stylish
+from gendiff.parser import parser
+from gendiff.command import create_attribut, set_added, set_deleted, \
+    set_changed, get_value
 
 
-def main():
+def cli():
     parser = argparse.ArgumentParser(
         description='Compares two configuration files and shows a difference.'
     )
@@ -20,7 +21,7 @@ def main():
     print(generate_diff(args.first_file, args.second_file, args.format))
 
 
-def replace_bool_or_None_to_str(value) -> str:
+def replace_bool_or_None_to_str(value):
     if value is True:
         value = 'true'
     elif value is False:
@@ -32,7 +33,7 @@ def replace_bool_or_None_to_str(value) -> str:
 
 def add_atribut(data):
     """
-    Appends dictionary elements with an attribute.
+    Appends attribute to dictionary elements.
     If the value is a dictionary, execute recursively.
     """
     for key, value in data.items():
@@ -43,31 +44,28 @@ def add_atribut(data):
             create_attribut(data, key, replace_bool_or_None_to_str(value))
 
 
-def compar_values(key, data, attributes1, attributes2):
+def compar_values(data, key, value, new_value):
     """
     Changes an attribute depending on the result of the comparison
     """
-    old_value, new_value = show_value(attributes1), show_value(attributes2)
+    create_attribut(data, key, value)
     if new_value is None:
-        deleted(data, key, attributes1)
-    elif old_value is None:
-        added(data, key, attributes2)
-    elif isinstance(old_value, dict) and isinstance(new_value, dict):
-        create_attribut(data, key, differ(old_value, new_value))
-    elif attributes1 != attributes2:
-        changed(data, key, attributes1, attributes2)
-    else:
-        create_attribut(data, key, old_value)
+        set_deleted(data, key)
+    elif value is None:
+        create_attribut(data, key, new_value)
+        set_added(data, key)
+    elif value != new_value:
+        set_changed(data, key, new_value)
 
 
-def differ(data1: dict, data2: dict) -> dict:
+def collect_diff(data1: dict, data2: dict) -> dict:
     """
     Returns a dictionary containing the result of comparing the values
     of two dictionaries. For each key, the value will be a list,
     the first element of which describes the change status (' ' - no change,
     '-' - key deleted, '+' - key added, '*' - key value changed).
-    Can be run recursively from a child function.
-       Example output:
+    Can be run recursively.
+    Example output:
        >>> pprint.pprint(vary(data1, data2))
        {'general': [' ',
                {'follow':   ['+', 'false'],
@@ -87,26 +85,27 @@ def differ(data1: dict, data2: dict) -> dict:
     for key in sorted(set(data1) | set(data2)):
         attributes1 = data1.get(key, no_attributes)
         attributes2 = data2.get(key, no_attributes)
-        compar_values(key, result, attributes1, attributes2)
+        value, new_value = get_value(attributes1), get_value(attributes2)
+        if isinstance(value, dict) and isinstance(new_value, dict):
+            create_attribut(result, key, collect_diff(value, new_value))
+        else:
+            compar_values(result, key, value, new_value)
     return result
 
 
-def generate_diff(file1, file2, formater=None):
+def generate_diff(file1, file2, formater='stylish'):
     data1 = parser(file1)
     add_atribut(data1)
 
     data2 = parser(file2)
     add_atribut(data2)
 
-    result = differ(data1, data2)
-    if formater is None or formater == 'stylish':
-        result = stylish(result)
-    elif formater == 'plain':
-        result = plain(result)
+    raw_diff = collect_diff(data1, data2)
+
+    if formater == 'plain':
+        result = plain(raw_diff)
     elif formater == 'json':
-        result = json(result)
+        result = json(raw_diff)
+    else:
+        result = stylish(raw_diff)
     return result
-
-
-if __name__ == '__main__':
-    main()

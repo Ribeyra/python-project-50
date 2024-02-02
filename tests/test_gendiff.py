@@ -1,5 +1,5 @@
 from gendiff.gendiff import replace_bool_or_None_to_str, add_atribut, \
-    compar_values, differ, generate_diff
+    compar_values, collect_diff, generate_diff
 
 
 def test_replace_bool_or_None_to_str():
@@ -66,61 +66,50 @@ def test_differ():
         }],
         'key3': [' ', 'value3']
     }
-    assert differ(data1, data2) == exp_res
+    assert collect_diff(data1, data2) == exp_res
 
 
 def test_compar_values():
 
     key = 'key'
     data = {}
-    attributes1 = [' ', 'old_value']
-    attributes2 = [None, None]
-    compar_values(key, data, attributes1, attributes2)
+    value1 = 'old_value'
+    value2 = None
+    compar_values(data, key, value1, value2)
     assert data == {'key': ['-', 'old_value']}
 
     data = {}
-    attributes1 = [None, None]
-    attributes2 = [' ', 'new_value']
-    compar_values(key, data, attributes1, attributes2)
+    value1 = None
+    value2 = 'new_value'
+    compar_values(data, key, value1, value2)
     assert data == {'key': ['+', 'new_value']}
 
     data = {}
-    attributes1 = [' ', 'old_value']
-    attributes2 = [' ', 'new_value']
-    compar_values(key, data, attributes1, attributes2)
+    value1 = 'old_value'
+    value2 = 'new_value'
+    compar_values(data, key, value1, value2)
     assert data == {'key': ['*', 'old_value', 'new_value']}
 
     data = {}
-    attributes1 = [' ', 'old_value']
-    attributes2 = [' ', 'old_value']
-    compar_values(key, data, attributes1, attributes2)
+    value1 = 'old_value'
+    value2 = 'old_value'
+    compar_values(data, key, value1, value2)
     assert data == {'key': [' ', 'old_value']}
 
 
-file1_json = 'tests/fixtures/file1.json'
-file2_json = 'tests/fixtures/file2.json'
-
-file3_json = 'tests/fixtures/file3.json'
-file4_json = 'tests/fixtures/file4.json'
-
-file1_yaml = 'tests/fixtures/file1.yaml'
-file2_yaml = 'tests/fixtures/file2.yml'
-
-file3_yaml = 'tests/fixtures/file3.yaml'
-file4_yaml = 'tests/fixtures/file4.yml'
-
-expected_result_to_flat_json = 'tests/fixtures/res_flat_json.txt'
-expected_result_to_nested_json = 'tests/fixtures/res_nested_json.txt'
-
-expected_result_to_flat_yaml = 'tests/fixtures/res_flat_yaml.txt'
-expected_result_to_nested_yaml = 'tests/fixtures/res_nested_yaml.txt'
-
-
 def test_generate_diff_for_flat_structures():
+    file1_json = 'tests/fixtures/file1.json'
+    file2_json = 'tests/fixtures/file2.json'
+    expected_result_to_flat_json = 'tests/fixtures/res_flat_json.txt'
+
     with open(expected_result_to_flat_json, 'r') as file:
         exp_flat = file.read()
 
     assert generate_diff(file1_json, file2_json) == exp_flat
+
+    file1_yaml = 'tests/fixtures/file1.yaml'
+    file2_yaml = 'tests/fixtures/file2.yml'
+    expected_result_to_flat_yaml = 'tests/fixtures/res_flat_yaml.txt'
 
     with open(expected_result_to_flat_yaml, 'r') as file:
         exp_flat = file.read()
@@ -129,10 +118,19 @@ def test_generate_diff_for_flat_structures():
 
 
 def test_generate_diff_for_nested_structures():
+
+    file3_json = 'tests/fixtures/file3.json'
+    file4_json = 'tests/fixtures/file4.json'
+    expected_result_to_nested_json = 'tests/fixtures/res_nested_json.txt'
+
     with open(expected_result_to_nested_json, 'r') as file:
         exp_nested = file.read()
 
     assert generate_diff(file3_json, file4_json) == exp_nested
+
+    file3_yaml = 'tests/fixtures/file3.yaml'
+    file4_yaml = 'tests/fixtures/file4.yml'
+    expected_result_to_nested_yaml = 'tests/fixtures/res_nested_yaml.txt'
 
     with open(expected_result_to_nested_yaml, 'r') as file:
         exp_nested = file.read()

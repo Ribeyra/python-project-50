@@ -1,3 +1,6 @@
+"""This module describes the data abstraction used in the project"""
+
+
 def create_attribut(target, key, value):
     """
     Creates an attribute for a dictionary element, changing the value
@@ -8,50 +11,44 @@ def create_attribut(target, key, value):
     target[key] = [' ', value]
 
 
-def added(target, key, attributes):
+def set_added(target, key):
     """
-    Adds attributes by key to the target dictionary.
     Changes the attribute that describes the change status of the value.
     """
-    create_attribut(target, key, show_value(attributes))
     target[key][0] = '+'
 
 
-def deleted(target, key, attributes):
+def set_deleted(target, key):
     """
-    Adds attributes by key to the target dictionary.
     Changes the attribute that describes the change status of the value.
     """
-    create_attribut(target, key, show_value(attributes))
     target[key][0] = '-'
 
 
-def changed(target, key, old_attributes, new_attributes):
+def set_changed(target, key, new_value):
     """
-    Adds attributes by key to the target dictionary.
-    Adds a new value to the attributes.
+    Adds a new_value to the attributes.
     Changes the attribute that describes the change status of the value.
     """
-    create_attribut(target, key, show_value(old_attributes))
-    target[key].append(show_value(new_attributes))
+    target[key].append(new_value)
     target[key][0] = '*'
 
 
-def show_value(attributes):
+def get_value(attributes):
     """
     Returns the value of a dictionary element from attributes
     """
     return attributes[1]
 
 
-def show_new_value(attributes):
+def get_new_value(attributes):
     """
     Returns the new value of a dictionary element from attributes
     """
     return attributes[2]
 
 
-def show_status(attributes):
+def get_status(attributes):
     """
     Returns the change status of a dictionary element from attributes
     """
