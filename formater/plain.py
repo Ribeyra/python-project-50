@@ -3,13 +3,13 @@ from gendiff.command import get_node, get_status, get_value, get_new_value
 
 def add_quotes(value):
     if value is True:
-        return 'true'
+        value = 'true'
     elif value is False:
-        return 'false'
+        value = 'false'
     elif value is None:
-        return 'null'
+        value = 'null'
     elif isinstance(value, str):
-        return f"'{value}'"
+        value = f"'{value}'"
     return value
 
 
