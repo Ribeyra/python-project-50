@@ -1,26 +1,8 @@
-from gendiff.gendiff import replace_bool_or_None_to_str, add_atribut, \
-    compar_values, collect_diff, generate_diff
+from gendiff.gendiff import collect_diff, generate_diff
 
 
-def test_replace_bool_or_None_to_str():
-    assert replace_bool_or_None_to_str(True) == 'true'
-    assert replace_bool_or_None_to_str(False) == 'false'
-    assert replace_bool_or_None_to_str(None) == 'null'
-    assert replace_bool_or_None_to_str('some text') == 'some text'
-    assert replace_bool_or_None_to_str(12) == 12
-
-
-def test_add_atribut():
-    data = {'key1': 'value1', 'key2': 'value2', 'key3': 'value3'}
-    exp_res = {
-        'key1': [' ', 'value1'],
-        'key2': [' ', 'value2'],
-        'key3': [' ', 'value3']
-    }
-    add_atribut(data)
-    assert data == exp_res
-
-    data2 = {
+def test_differ():
+    data1 = {
         'key1': 'value1',
         'key2': {
             'inner_key1': 'inner_value1',
@@ -28,73 +10,28 @@ def test_add_atribut():
         },
         'key3': 'value3'
     }
-    exp_res2 = {
-        'key1': [' ', 'value1'],
-        'key2': [' ', {
-            'inner_key1': [' ', 'inner_value1'],
-            'inner_key2': [' ', 'inner_value2']
-        }],
-        'key3': [' ', 'value3']
-    }
-    add_atribut(data2)
-    assert data2 == exp_res2
-
-
-def test_differ():
-    data1 = {
-        'key1': [' ', 'value1'],
-        'key2': [' ', {
-            'inner_key1': [' ', 'inner_value1'],
-            'inner_key2': [' ', 'inner_value2']
-        }],
-        'key3': [' ', 'value3']
-    }
     data2 = {
-        'key1': [' ', 'true'],
-        'key2': [' ', {
-            'inner_key1': [' ', 'some_value1'],
-            'inner_key3': [' ', 'inner_value2']
-        }],
-        'key3': [' ', 'value3']
+        'key1': 'true',
+        'key2': {
+            'inner_key1': 'some_value1',
+            'inner_key3': 'inner_value2'
+        },
+        'key3': 'value3'
     }
     exp_res = {
-        'key1': ['*', 'value1', 'true'],
-        'key2': [' ', {
-            'inner_key1': ['*', 'inner_value1', 'some_value1'],
-            'inner_key2': ['-', 'inner_value2'],
-            'inner_key3': ['+', 'inner_value2']
-        }],
-        'key3': [' ', 'value3']
+        'key1': {'type': 'mod', 'value': 'value1', 'new_value': 'true'},
+        'key2': {'type': 'unchg', 'value': {
+            'inner_key1': {
+                'type': 'mod',
+                'value': 'inner_value1',
+                'new_value': 'some_value1'
+            },
+            'inner_key2': {'type': 'del', 'value': 'inner_value2'},
+            'inner_key3': {'type': 'add', 'value': 'inner_value2'}
+        }},
+        'key3': {'type': 'unchg', 'value': 'value3'}
     }
     assert collect_diff(data1, data2) == exp_res
-
-
-def test_compar_values():
-
-    key = 'key'
-    data = {}
-    value1 = 'old_value'
-    value2 = None
-    compar_values(data, key, value1, value2)
-    assert data == {'key': ['-', 'old_value']}
-
-    data = {}
-    value1 = None
-    value2 = 'new_value'
-    compar_values(data, key, value1, value2)
-    assert data == {'key': ['+', 'new_value']}
-
-    data = {}
-    value1 = 'old_value'
-    value2 = 'new_value'
-    compar_values(data, key, value1, value2)
-    assert data == {'key': ['*', 'old_value', 'new_value']}
-
-    data = {}
-    value1 = 'old_value'
-    value2 = 'old_value'
-    compar_values(data, key, value1, value2)
-    assert data == {'key': [' ', 'old_value']}
 
 
 def test_generate_diff_for_flat_structures():
@@ -132,17 +69,17 @@ def test_generate_diff_for_nested_structures():
     file4_yaml = 'tests/fixtures/file4.yml'
     expected_result_to_nested_yaml = 'tests/fixtures/res_nested_yaml.txt'
 
-    with open(expected_result_to_nested_yaml, 'r') as file:
+    with open(expected_result_to_nested_yaml) as file:
         exp_nested = file.read()
 
     assert generate_diff(file3_yaml, file4_yaml) == exp_nested
 
-    with open('tests/fixtures/res_plain_out.txt', 'r') as file:
+    with open('tests/fixtures/res_plain_out.txt') as file:
         exp_nested = file.read()
 
     assert generate_diff(file3_json, file4_json, 'plain') == exp_nested
 
-    with open('tests/fixtures/res_json_out.txt', 'r') as file:
+    with open('tests/fixtures/res_json_out.txt') as file:
         exp_nested = file.read()
 
     assert generate_diff(file3_json, file4_json, 'json') == exp_nested

@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-from gendiff.gendiff import cli
+from gendiff.cli import cli_parser
+from gendiff.gendiff import generate_diff
 
 
 def main():
-    cli()
+    path1, path2, formater = cli_parser()
+    print(generate_diff(path1, path2, formater))
 
 
 if __name__ == '__main__':

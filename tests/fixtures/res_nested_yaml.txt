@@ -21,28 +21,28 @@
             name: Luc Besson
         }
       + user4: {
-            name: Alan Cumming
             age: 59
+            name: Alan Cumming
         }
     }
   - group3: {
         user1: {
-            name: Alan Cumming
             age: 59
+            name: Alan Cumming
         }
         user2: {
-            name: James Cromwell
             age: 84
+            name: James Cromwell
         }
     }
   + group4: {
         user1: {
-            name: Rosamund Pike
             age: 45
+            name: Rosamund Pike
         }
         user2: {
-            name: James Cromwell
             age: 84
+            name: James Cromwell
         }
     }
 }
