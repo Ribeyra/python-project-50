@@ -2,7 +2,7 @@ install: # Установка зависимостей с использован
 	poetry install
 
 gendiff-h: # Запуск "gendiff -h"
-	poetry run python3 -m gendiff.gendiff -h
+	poetry run gendiff -h
 
 build: # Сборка пакета с использованием poetry
 	poetry build

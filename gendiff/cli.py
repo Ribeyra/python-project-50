@@ -3,7 +3,8 @@ import argparse
 
 def cli_parser():
     parser = argparse.ArgumentParser(
-        description='Compares two configuration files and shows a difference.'
+        description='Compares two configuration files and shows a difference. \
+        Files for comparison must be in yaml (yml) or json format.'
     )
 
     parser.add_argument('first_file')
