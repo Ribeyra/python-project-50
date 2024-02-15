@@ -1,66 +1,66 @@
 common:
-  type: unchg
+  type: unchanged
   value:
     follow:
-      type: add
+      type: added
       value: false
     setting1:
-      type: unchg
+      type: unchanged
       value: Value 1
     setting2:
-      type: del
+      type: deleted
       value: 200
     setting3:
-      type: mod
+      type: changed
       value: true
       new_value:
         key: value
     setting4:
-      type: add
+      type: added
       value: blah blah
     setting5:
-      type: add
+      type: added
       value:
         key5: value5
     setting6:
-      type: unchg
+      type: unchanged
       value:
         doge:
-          type: unchg
+          type: unchanged
           value:
             wow:
-              type: mod
+              type: changed
               value: ''
               new_value: so much
         key:
-          type: unchg
+          type: unchanged
           value: value
         ops:
-          type: add
+          type: added
           value: vops
 group1:
-  type: unchg
+  type: unchanged
   value:
     baz:
-      type: mod
+      type: changed
       value: bas
       new_value: bars
     foo:
-      type: unchg
+      type: unchanged
       value: bar
     nest:
-      type: mod
+      type: changed
       value:
         key: value
       new_value: str
 group2:
-  type: del
+  type: deleted
   value:
     abc: 12345
     deep:
       id: 45
 group3:
-  type: add
+  type: added
   value:
     deep:
       id:

@@ -19,16 +19,16 @@ def test_complex_value():
 
 def test_assemble_string():
     text1 = "Property 'path.to.value' was added with value: true"
-    node1 = {'type': 'add', 'value': True}
+    node1 = {'type': 'added', 'value': True}
     assert assemble_string('path.to.value.', node1) == text1
     text2 = "Property 'path.to.value' was removed"
-    node2 = {'type': 'del', 'value': True}
+    node2 = {'type': 'deleted', 'value': True}
     assert assemble_string('path.to.value.', node2) == text2
     text3 = "Property 'path.to.value' was updated. From '' to ' '"
-    node3 = {'type': 'mod', 'value': '', 'new_value': ' '}
+    node3 = {'type': 'changed', 'value': '', 'new_value': ' '}
     assert assemble_string('path.to.value.', node3) == text3
     text4 = "Property 'path.to.value' was added with value: [complex value]"
-    node4 = {'type': 'add', 'value': {}}
+    node4 = {'type': 'added', 'value': {}}
     assert assemble_string('path.to.value.', node4) == text4
 
 

@@ -21,13 +21,13 @@ def assemble_string(indentations: dict, key: str, node: list, deps: int):
     value = replace_bool_or_None_to_str(value)
     if isinstance(value, dict):
         value = stylish(value, deps + 1)
-    if status == 'mod':
+    if status == 'changed':
         new_value = get_new_value(node)
         new_value = replace_bool_or_None_to_str(new_value)
         if isinstance(new_value, dict):
             new_value = stylish(new_value, deps + 1)
-        return (f'{indentations["del"]}{key}: {value}\n'
-                f'{indentations["add"]}{key}: {new_value}\n')
+        return (f'{indentations["deleted"]}{key}: {value}\n'
+                f'{indentations["added"]}{key}: {new_value}\n')
     return f'{indentations[status]}{key}: {value}\n'
 
 
@@ -37,13 +37,15 @@ def stylish(data, deps=0) -> str:
     Can be called recursively from a child function.
     """
     indentations = {
-        'unchg': (' ' * 4) * deps + '    ',
-        'del': (' ' * 4) * deps + '  - ',
-        'add': (' ' * 4) * deps + '  + '
+        'unchanged': (' ' * 4) * deps + '    ',
+        'deleted': (' ' * 4) * deps + '  - ',
+        'added': (' ' * 4) * deps + '  + '
     }
     lines = []
     for key in sorted(data.keys()):
         value = data[key]
         lines.append(assemble_string(indentations, key, value, deps))
-    result = ''.join(['{\n'] + lines + [f'{indentations["unchg"][:-4]}' + '}'])
+    result = ''.join(
+        ['{\n'] + lines + [f'{indentations["unchanged"][:-4]}' + '}']
+    )
     return result

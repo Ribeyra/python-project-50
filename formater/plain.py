@@ -22,11 +22,11 @@ def complex_value(value):
 def assemble_string(path, node):
     status = get_status(node)
     value = complex_value(get_value(node))
-    if status == 'add':
+    if status == 'added':
         text = f'added with value: {value}'
-    elif status == 'del':
+    elif status == 'deleted':
         text = 'removed'
-    elif status == 'mod':
+    elif status == 'changed':
         new_value = complex_value(get_new_value(node))
         text = f'updated. From {value} to {new_value}'
     result = f"Property '{path[:-1]}' was {text}"
@@ -39,9 +39,9 @@ def collect_strings_list(data, path=''):
         node = get_node(data, key)
         status = get_status(node)
         value = get_value(node)
-        if isinstance(value, dict) and status == 'unchg':
+        if isinstance(value, dict) and status == 'unchanged':
             result.extend(collect_strings_list(value, f'{path}{key}.'))
-        elif status != 'unchg':
+        elif status != 'unchanged':
             result.append(assemble_string(f'{path}{key}.', node))
     return result
 

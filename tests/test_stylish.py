@@ -14,25 +14,25 @@ def test_replace_bool_or_None_to_str():
 def test_assemble_string():
     deps = 1
     indentations = {
-        'unchg': (' ' * 4) * deps + '    ',
-        'del': (' ' * 4) * deps + '  - ',
-        'add': (' ' * 4) * deps + '  + '
+        'unchanged': (' ' * 4) * deps + '    ',
+        'deleted': (' ' * 4) * deps + '  - ',
+        'added': (' ' * 4) * deps + '  + '
     }
     key = 'key'
 
-    node = {'type': 'unchg', 'value': 'value'}
+    node = {'type': 'unchanged', 'value': 'value'}
     res = "        key: value\n"
     assert assemble_string(indentations, key, node, deps) == res
 
-    node = {'type': 'del', 'value': 'value'}
+    node = {'type': 'deleted', 'value': 'value'}
     res = "      - key: value\n"
     assert assemble_string(indentations, key, node, deps) == res
 
-    node = {'type': 'add', 'value': 'value'}
+    node = {'type': 'added', 'value': 'value'}
     res = "      + key: value\n"
     assert assemble_string(indentations, key, node, deps) == res
 
-    node = {'type': 'mod', 'value': 'old_value', 'new_value': 'new_value'}
+    node = {'type': 'changed', 'value': 'old_value', 'new_value': 'new_value'}
     res = "      - key: old_value\n      + key: new_value\n"
     assert assemble_string(indentations, key, node, deps) == res
 

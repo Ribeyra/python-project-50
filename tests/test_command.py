@@ -10,10 +10,10 @@ def data():
 
 def test_create_attribut(data):
     create_node(data, 'key', 'value')
-    assert data == {'key': {'type': 'unchg', 'value': 'value'}}
+    assert data == {'key': {'type': 'unchanged', 'value': 'value'}}
 
     create_node(data, 'key2', 'value2')
-    assert data['key2'] == {'type': 'unchg', 'value': 'value2'}
+    assert data['key2'] == {'type': 'unchanged', 'value': 'value2'}
 
 
 @pytest.fixture
@@ -24,20 +24,20 @@ def attributed_data():
 def test_set_added(attributed_data):
     create_node(attributed_data, 'key', 'value')
     set_added(attributed_data, 'key')
-    assert attributed_data == {'key': {'type': 'add', 'value': 'value'}}
+    assert attributed_data == {'key': {'type': 'added', 'value': 'value'}}
 
 
 def test_set_deleted(attributed_data):
     create_node(attributed_data, 'key', 'value')
     set_deleted(attributed_data, 'key')
-    assert attributed_data == {'key': {'type': 'del', 'value': 'value'}}
+    assert attributed_data == {'key': {'type': 'deleted', 'value': 'value'}}
 
 
 def test_set_changed(attributed_data):
     create_node(attributed_data, 'key', 'value')
     set_changed(attributed_data, 'key', 'value2')
     assert attributed_data == {'key': {
-        'type': 'mod',
+        'type': 'changed',
         'value': 'value',
         'new_value': 'value2'
     }}
@@ -46,15 +46,15 @@ def test_set_changed(attributed_data):
 @pytest.fixture
 def changed_data():
     return {'key': {
-        'type': 'mod',
+        'type': 'changed',
         'value': 'value',
         'new_value': 'value2'
     }}
 
 
 def test_show_status(changed_data):
-    assert get_status('value') == 'unchg'
-    assert get_status(changed_data['key']) == 'mod'
+    assert get_status('value') == 'unchanged'
+    assert get_status(changed_data['key']) == 'changed'
 
 
 def test_show_value(changed_data):
