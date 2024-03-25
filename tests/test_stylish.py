@@ -1,6 +1,6 @@
 from formater.stylish import replace_bool_or_None_to_str, assemble_string, \
     stylish
-from gendiff.parser import parser
+from gendiff.parser import get_raw_data, parser
 
 
 def test_replace_bool_or_None_to_str():
@@ -38,7 +38,8 @@ def test_assemble_string():
 
 
 def test_stylish():
-    raw_diff = parser('tests/fixtures/raw_diff.json')
+    raw_data = get_raw_data('tests/fixtures/raw_diff.json')
+    raw_diff = parser(raw_data)
 
     with open('tests/fixtures/res_nested_json.txt') as file:
         exp_res = file.read()

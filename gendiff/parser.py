@@ -2,11 +2,11 @@ import yaml
 import json
 
 
-def parser(path):
+def get_raw_data(path):
     try:
         if path.endswith(('.json', '.yaml', '.yml')):
             with open(path) as file:
-                data = yaml.load(file, Loader=yaml.Loader)
+                raw_data = file.read()
         else:
             raise Exception(f"Unsupported file type: '{path}'")
     except yaml.scanner.ScannerError:
@@ -16,6 +16,11 @@ def parser(path):
         )
     except FileNotFoundError:
         raise Exception(f"File not found: '{path}'")
+    return raw_data
+
+
+def parser(raw_data):
+    data = yaml.load(raw_data, Loader=yaml.Loader)
     return data
 
 

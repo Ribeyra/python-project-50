@@ -1,4 +1,4 @@
-from gendiff.parser import parser, project_parser
+from gendiff.parser import get_raw_data, parser, project_parser
 
 
 def test_parser():  # noqa: C901
@@ -8,7 +8,8 @@ def test_parser():  # noqa: C901
         'run':
         'flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics'
     }
-    assert parser('tests/fixtures/file1.yaml') == expected_result
+    raw_data = get_raw_data('tests/fixtures/file1.yaml')
+    assert parser(raw_data) == expected_result
 
     path_1 = 'tests/fixtures/res_json_out.txt'
     error_1 = f"Unsupported file type: '{path_1}'"

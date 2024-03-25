@@ -1,5 +1,5 @@
 from formater.plain import add_quotes, complex_value, assemble_string, plain
-from gendiff.parser import parser
+from gendiff.parser import get_raw_data, parser
 
 
 def test_add_quotes():
@@ -33,7 +33,8 @@ def test_assemble_string():
 
 
 def test_plain():
-    raw_diff = parser('tests/fixtures/raw_diff.yaml')
+    raw_data = get_raw_data('tests/fixtures/raw_diff.yaml')
+    raw_diff = parser(raw_data)
 
     with open('tests/fixtures/res_plain_out.txt') as file:
         exp_res = file.read()
